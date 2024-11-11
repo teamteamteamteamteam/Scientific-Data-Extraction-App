@@ -13,7 +13,7 @@ class DatabaseCreator:
         self.cursor.close()
         self.conn.close()
 
-    def createTableCompounds(self):
+    def create_table_compounds(self):
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS Compounds (
                 compound_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,7 +25,7 @@ class DatabaseCreator:
         ''')
         self.conn.commit()
 
-    def createTableImages(self):
+    def create_table_images(self):
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS Images (
                 image_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,11 +37,3 @@ class DatabaseCreator:
             )
         ''')
         self.conn.commit()
-
-
-database = DatabaseCreator()
-database.createTableCompounds()
-database.createTableImages()
-
-dbFiller = DatabaseFiller(Paths.DATABASE_PATH)
-dbFiller.fill_data_from_images_csv(Paths.COMPOUND_CSV_PATH, 'Compounds')
