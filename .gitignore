@@ -1,2 +1,7 @@
+#temporary folders
 .vscode/
 .venv/
+__pycache__/
+
+#database fildes
+*.db
