@@ -1,67 +1,54 @@
 import csv
-import sqlite3
+from DatabaseInterface import DatabaseInterface
 
 class DatabaseFiller:
 
-    def __init__(self, db_path):
-        self.db_path = db_path
+    def __init__(self, database: DatabaseInterface):
+        self.database = database
+        self.database.connect()
+    
+    def __del__(self):
+        self.database.close()
 
-    def connect(self):
-        conn = sqlite3.connect(self.db_path)
-        return conn
-
-    def fill_compounds_table(self, csv_file, table_name):
-        conn = self.connect()
-        cursor = conn.cursor()
-
+    def fill_compounds_table(self, csv_file):
         with open(csv_file, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
 
             for row in reader:
                 compound_name = row['compound']
                 smiles = row['smiles']
-                
-                coord_x = 0.0 
-                coord_y = 0.0 
-                
-                sql = '''INSERT INTO Compounds (compound_name, smiles, coord_x, coord_y)
-                         VALUES (?, ?, ?, ?)'''
-                cursor.execute(sql, (compound_name, smiles, coord_x, coord_y))
-    
+                self.database.insert_into_table_compounds(compound_name, smiles)
+            
+            self.database.commit()
 
-        conn.commit()
-        conn.close()
-
-    def fill_images_table(self, csv_file, table_name):
-        conn = self.connect()
-        cursor = conn.cursor()
-
+    def fill_images_table(self, csv_file):
         with open(csv_file, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
 
             for row in reader:
                 compound_name = row['Image_Metadata_Compound']
                 concentration = float(row['Image_Metadata_Concentration'])
-                folder_path = row['Image_PathName_DAPI']
-                image_path = row['Image_FileName_DAPI']
+
+                folder_DAPI_path = row['Image_PathName_DAPI']
+                image_DAPI_path = row['Image_FileName_DAPI']
+
+                folder_Tubulin_path = row['Image_PathName_Tubulin']
+                image_Tubulin_path = row['Image_FileName_Tubulin']
+
+                folder_Actin_path = row['Image_PathName_Actin']
+                image_Actin_path = row['Image_FileName_Actin']
                 
-                #find compound id in compounds table
-                cursor.execute("SELECT compound_id FROM Compounds WHERE compound_name = ?", (compound_name,))
-                compound_id_row = cursor.fetchone()
+                self.database.find_compound_id(compound_name)
+                compound_id_row = self.database.cursor.fetchone()
 
                 if compound_id_row:
                     compound_id = compound_id_row[0]
-                    
-                    cursor.execute('''
-                        INSERT INTO Images (compound_id, concentration, folder_path, image_path)
-                        VALUES (?, ?, ?, ?)
-                    ''', (compound_id, concentration, folder_path, image_path))
-
+                    self.database.insert_into_table_images(compound_id, concentration, folder_DAPI_path, image_DAPI_path)
+                    self.database.insert_into_table_images(compound_id, concentration, folder_Tubulin_path, image_Tubulin_path)
+                    self.database.insert_into_table_images(compound_id, concentration, folder_Actin_path, image_Actin_path)
                 else:
                     print(f"Compound {compound_name} not found in Compounds table.")
                     raise ModuleNotFoundError
                 
-            
-        conn.commit()
-        conn.close()
+            self.database.commit()
     
