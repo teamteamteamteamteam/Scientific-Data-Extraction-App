@@ -93,7 +93,6 @@ class SQLiteDatabase(DatabaseInterface):
                     WHERE compound_name = ?
                 ''', (coord_x, coord_y, compound_name))
 
-
     def find_compound_id(self, compound_name):
         self.cursor.execute("SELECT compound_id FROM Compounds WHERE compound_name = ?", (compound_name,))
 
