@@ -1,11 +1,15 @@
 import sqlite3
 from DatabaseInterface import DatabaseInterface
 
+
+
 class SQLiteDatabase(DatabaseInterface):
+    # Singleton: A single instance for the entire application
     _instance = None
     _connection_count = 0
 
     def __new__(cls, db_path):
+        # Creates a class instance or returns the existing one (Singleton)
         if cls._instance is None:
             cls._instance = super(SQLiteDatabase, cls).__new__(cls)
             cls._instance.db_path = db_path
@@ -14,48 +18,68 @@ class SQLiteDatabase(DatabaseInterface):
         return cls._instance
 
     def connect(self):
+        # Establishes a connection to the database if none exists
         if self.conn is None:
-            self.conn = sqlite3.connect(self.db_path)
-            self.cursor = self.conn.cursor()
-        SQLiteDatabase._connection_count += 1
+            try:
+                self.conn = sqlite3.connect(self.db_path)
+                self.cursor = self.conn.cursor()
+                SQLiteDatabase._connection_count += 1
+            except sqlite3.Error as e:
+                raise RuntimeError(f"Failed to connect to the database: {e}")
 
     def close(self):
+        # Closes the connection to the database
         SQLiteDatabase._connection_count -= 1
-        if SQLiteDatabase._connection_count == 0:
+        if SQLiteDatabase._connection_count <= 0:
+            SQLiteDatabase._connection_count = 0
             if self.cursor:
                 self.cursor.close()
+                self.cursor = None
             if self.conn:
                 self.conn.close()
-            self.cursor = None
-            self.conn = None
-
+                self.conn = None
 
     def commit(self):
-        self.conn.commit()
+        # Commits all changes made to the database
+        if self.conn:
+            try:
+                self.conn.commit()
+            except sqlite3.Error as e:
+                raise RuntimeError(f"Error during transaction commit: {e}")
+        else:
+            raise RuntimeError("No active database connection.")
 
+    # Table creation methods
     def create_table_compounds(self):
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Compounds (
-                compound_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                compound_name TEXT NOT NULL,
-                smiles TEXT,
-                coord_x REAL,
-                coord_y REAL
-            )
-        ''')
+        try:
+            self.cursor.execute(''' 
+                CREATE TABLE IF NOT EXISTS Compounds (
+                    compound_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    compound_name TEXT NOT NULL,
+                    smiles TEXT,
+                    coord_x REAL,
+                    coord_y REAL
+                )
+            ''')
+        except sqlite3.Error as e:
+            print(f"Error creating Compounds table: {e}")
 
     def create_table_images(self):
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Images (
-                image_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                compound_id INTEGER,
-                concentration REAL,
-                folder_path TEXT,
-                image_path TEXT,
-                FOREIGN KEY (compound_id) REFERENCES Compounds (compound_id)
-            )
-        ''')
+        try:
+            self.cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Images (
+                    image_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    compound_id INTEGER,
+                    concentration REAL,
+                    folder_path TEXT,
+                    image_path TEXT,
+                    FOREIGN KEY (compound_id) REFERENCES Compounds (compound_id)
+                )
+            ''')
+        except sqlite3.Error as e:
+            print(f"Error creating Images table: {e}")
 
+    # Table operations
     def insert_into_table_compounds(self, compound_name, smiles):
         self.cursor.execute('''
                     INSERT INTO Compounds (compound_name, smiles)
