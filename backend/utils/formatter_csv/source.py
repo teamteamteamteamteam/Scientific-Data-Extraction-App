@@ -28,23 +28,43 @@ class CsvFormatter:
         return new_path
     
 
-    def get_all_files_in_folder(self):
-        path = Path(self.input_folder_path)
-        return [str(file) for file in path.glob('*.csv')]
+    def create_folder(self, new_folder_name):
+        new_folder_path = Path(self.output_folder_path) / new_folder_name
+        new_folder_path.mkdir(exist_ok=True)
+        return new_folder_path
+
+    
+    def get_csv_files(self):
+        csv_files = []
+        first_loop_create_dirs = True
+        for root, dirs, files in os.walk(self.input_folder_path):
+            
+            if first_loop_create_dirs:
+                first_loop_create_dirs = False
+                for directory in dirs:
+                    self.create_folder(directory)
+
+            for file in files:
+                if file.endswith('.csv'):
+                    csv_files.append(os.path.join(root, file))
+        return csv_files
+
+
 
     def run_formatter(self):
         os.makedirs(self.output_folder_path, exist_ok=True)
-        files_to_analize = self.get_all_files_in_folder()
+        files_to_analize = self.get_csv_files()
         cols_to_delete = [x for x in range(COLS_TO_SKIP)]
-        
         for file_path in files_to_analize:
             if 'Image' not in file_path:
                 self.__delete_some_colls_in_csv(file_path, self.modify_file_path(file_path), cols_to_delete)
+                
 
 
 """
     :param input_folder_path: Nazwa folderu z danymi wejściowymi. Skrypt .py musi się znajdować
-    w tym samym folderze co folder z plikami do analizy. Folder ten zawiera pliki, które będą analizowane.
+    w tym samym folderze co folder z plikami do analizy. Folder ten zawiera foldery o nazwie trzyznakowej,
+    którego pliki będą analizowane.
 
     :param output_folder_path: Nazwa folderu, który zostanie utworzony, jeśli jeszcze nie istnieje. 
     Do tego folderu zostaną zapisane pliki wyjściowe, które wynikną z przeprowadzonej analizy.
