@@ -48,8 +48,7 @@ Diagram klas aplikacji przedstawia strukturę systemu oraz relacje między klucz
   - `UsablePaths.py`
   - `DatabaseInterface.py`
 
-2. **Problemy z testowaniem:**
-
+2. **Problemy z testowaniem:** 
 Pliki operujące na bazie danych:
   - `SQLiteDatabase.py`  
   - `DatabaseCreator.py`  
