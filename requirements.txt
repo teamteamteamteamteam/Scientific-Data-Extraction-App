@@ -10,6 +10,7 @@ numba==0.60.0
 numpy
 pandas
 pytest==8.3.3
+pytest-cov
 python-dateutil
 scikit-learn==1.5.2
 SQLAlchemy
