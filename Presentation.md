@@ -44,18 +44,18 @@ Diagram klas aplikacji przedstawia strukturę systemu oraz relacje między klucz
    - Integracja z GitHub Actions usprawniła automatyzację zadań.
 
 ## Testowanie
-- **Przetestowane pliki:**
+1. **Przetestowane pliki:**
   - `UsablePaths.py`
   - `DatabaseInterface.py`
 
-- **Problemy z testowaniem:**
+2. **Problemy z testowaniem:**
   - Pliki operujące na bazie danych:  
     - `SQLiteDatabase.py`  
     - `DatabaseCreator.py`  
     - `DatabaseFiller.py`  
   - Aktualnie pracujemy nad użyciem mocków, aby umożliwić testowanie tych modułów.
 
-- **Pliki do przetestowania:**
+3. **Pliki do przetestowania:**
     - `SQLiteDatabase.py`  
     - `DatabaseCreator.py`  
     - `DatabaseFiller.py`  
