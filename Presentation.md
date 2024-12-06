@@ -43,5 +43,24 @@ Diagram klas aplikacji przedstawia strukturę systemu oraz relacje między klucz
    - Pull requesty i code review pomogły zachować spójność kodu.
    - Integracja z GitHub Actions usprawniła automatyzację zadań.
 
+## Testowanie
+- **Przetestowane pliki:**
+  - `UsablePaths.py`
+  - `DatabaseInterface.py`
+
+- **Problemy z testowaniem:**
+  - Pliki operujące na bazie danych:  
+    - `SQLiteDatabase.py`  
+    - `DatabaseCreator.py`  
+    - `DatabaseFiller.py`  
+  - Aktualnie pracujemy nad użyciem mocków, aby umożliwić testowanie tych modułów.
+
+- **Pliki do przetestowania:**
+    - `SQLiteDatabase.py`  
+    - `DatabaseCreator.py`  
+    - `DatabaseFiller.py`  
+    - `Program.py`
+
+
 ## Link do repozytorium
 [Scientific Data Exploration App](https://github.com/teamteamteamteamteam/ScientificDataExtractionApp)
