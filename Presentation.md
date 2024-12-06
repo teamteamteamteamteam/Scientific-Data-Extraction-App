@@ -49,11 +49,11 @@ Diagram klas aplikacji przedstawia strukturę systemu oraz relacje między klucz
   - `DatabaseInterface.py`
 
 2. **Problemy z testowaniem:**
-*Pliki operujące na bazie danych:*
+Pliki operujące na bazie danych:
   - `SQLiteDatabase.py`  
   - `DatabaseCreator.py`  
   - `DatabaseFiller.py`  
-*Aktualnie pracujemy nad użyciem mocków, aby umożliwić testowanie tych modułów.*
+Aktualnie pracujemy nad użyciem mocków, aby umożliwić testowanie tych modułów.
 
 3. **Pliki do przetestowania:**
   - `SQLiteDatabase.py`  
