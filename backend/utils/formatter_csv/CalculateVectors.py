@@ -7,7 +7,7 @@ class CalculateVectors:
     def __init__(self, formatted_folder_path, original_folder_path):
         self.formatted_folder_path = formatted_folder_path
         self.original_folder_path = original_folder_path
-        self.hashmap = {}
+        self.data = []
 
     def calcualte_averange_from_file(self, folder_name):
         total_sum = 0
@@ -55,13 +55,15 @@ class CalculateVectors:
             if subfolder.is_dir():
                 csv_files = list(subfolder.glob("*csv"))
                 vector = self.create_vector(csv_files)
-                self.hashmap[subfolder.name] = vector
-                listPhoto = self.find_photos(subfolder.name)
-                print(f"Wektor dla folderu {subfolder.name}: {vector}")
-                print(f"lista zdjec: {listPhoto}")
+                imagesList = self.find_images(subfolder.name)
+                self.data.append({
+                    "folder_name": subfolder.name,
+                    "vector": vector,
+                    "images": imagesList
+                })
 
 
-    def find_photos(self, folder_name):
+    def find_images(self, folder_name):
         folder_path = Path(self.original_folder_path) / folder_name
 
         if not folder_path.exists() or not folder_path.is_dir():
@@ -81,6 +83,20 @@ class CalculateVectors:
         }
 
         return file_names
+    
+    def convert_vectors_to_2D(self):
+        vectors = [[entry["vector"]] for entry in self.data]
+        umap_reducer = umap.UMAP(n_components=2, random_state=42)
+        embeddings = umap_reducer.fit_transform(vectors)
+
+        for entry, embedding in zip(self.data, embeddings):
+            entry["x"] = embedding[0]
+            entry["y"] = embedding[1]
+
+    def print_converted_data(self):
+        for entry in self.data:
+            print(f"Folder: {entry['folder_name']}, Współrzędne: ({entry['x']}, {entry['y']})")
+            # print(f"Zdjęcia: {entry['images']}")
 
 
 formatted_folder_path = Path(__file__).parent / "formatted"
@@ -88,3 +104,5 @@ original_folder_path = Path(__file__).parent / "original"
 # calculateVectors = CalculateVectors(str(formatted_folder_path))
 calculateVectors = CalculateVectors(str(formatted_folder_path), str(original_folder_path))
 calculateVectors.iterate_formatted_folder()
+calculateVectors.convert_vectors_to_2D()
+calculateVectors.print_converted_data()
