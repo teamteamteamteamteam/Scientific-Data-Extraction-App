@@ -71,6 +71,8 @@ class CsvFormatter:
 
     Przykładowe wywołanie niżej:
 """
-
-formatter = CsvFormatter("original", "formatted")
+formatted_folder_path = Path(__file__).parent / "formatted"
+original_folder_path = Path(__file__).parent / "original"
+# str(formatted_folder_path), str(original_folder_path)
+formatter = CsvFormatter(str(original_folder_path), str(formatted_folder_path))
 formatter.run_formatter()
