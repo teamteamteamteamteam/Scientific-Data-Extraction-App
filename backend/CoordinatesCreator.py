@@ -3,7 +3,7 @@ import numpy as np
 import umap
 from rdkit import Chem
 from rdkit.Chem import AllChem
-from DatabaseInterface import DatabaseInterface
+from backend.utils.DatabaseInterface import DatabaseInterface
 
 class CoordinatesCreator:
     def __init__(self, database: DatabaseInterface):
