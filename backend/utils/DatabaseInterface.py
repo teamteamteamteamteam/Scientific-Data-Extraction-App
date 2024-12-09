@@ -18,11 +18,19 @@ class DatabaseInterface(ABC):
         pass
     
     @abstractmethod
-    def insert_into_table_compounds(self, compound_name, smiles):
+    def insert_into_table_compounds(self, compound_name, compound_concentration, is_active):
         pass
 
     @abstractmethod
     def update_coords_table_compounds(self, compound_name, coord_x, coord_y):
+        pass
+
+    @abstractmethod
+    def update_compounds_moa(self, compound_name, moa_id):
+        pass
+
+    @abstractmethod
+    def updata_compounds_empty_moa(self, moa_id):
         pass
 
     @abstractmethod
@@ -42,5 +50,17 @@ class DatabaseInterface(ABC):
         pass
 
     @abstractmethod
+    def insert_into_color_by_concentration(self, r, g, b):
+        pass
+
+    @abstractmethod
     def create_table_color_by_moa(self):
+        pass
+
+    @abstractmethod
+    def update_compounds_color_concentration(self, concentration, color_id):
+        pass
+
+    @abstractmethod
+    def insert_into_color_table_by_moa(self, moa, concentration, r, g, b):
         pass
