@@ -73,7 +73,9 @@ class SQLiteDatabase(DatabaseInterface):
                     image_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     compound_id INTEGER,
                     folder_path TEXT,
-                    image_path TEXT,
+                    dapi_path TEXT,
+                    tubulin_path TEXT, 
+                    actin_path TEXT,                    
                     FOREIGN KEY (compound_id) REFERENCES Compounds (compound_id)
                 )
             ''')
@@ -128,6 +130,13 @@ class SQLiteDatabase(DatabaseInterface):
                     SET moa_id = ?
                     WHERE compound_name = ?
                 ''', (moa_id, compound_name))
+        
+    def update_compound_coordinates(self, compound_id, new_x, new_y, is_active):
+        self.cursor.execute('''
+                    UPDATE Compounds 
+                    SET coord_x = ?, coord_y = ?, is_active = ?
+                    WHERE compound_id = ?
+                ''', (new_x, new_y, is_active, compound_id))
 
     def updata_compounds_empty_moa(self, moa_id):
         self.cursor.execute('''
@@ -135,15 +144,36 @@ class SQLiteDatabase(DatabaseInterface):
                     SET moa_id = ?
                     WHERE moa_id IS NULL
                 ''', (moa_id,))
+        
+    def fetch_compound_by_name_and_concentration(self, compound_name, concentration):
+        self.cursor.execute('''SELECT compound_id, is_active, coord_x, coord_y 
+                            FROM Compounds 
+                            WHERE compound_name = ? AND compound_concentration = ?
+                            ''', (compound_name, concentration,))
+        result = self.cursor.fetchone()
+    
+        if result is None:
+            return None
+        
+        # Obsługa konwersji bajtów na float
+        coord_x = float.fromhex(result[2].hex()) if isinstance(result[2], bytes) else result[2]
+        coord_y = float.fromhex(result[3].hex()) if isinstance(result[3], bytes) else result[3]
+    
+        return {
+            "compound_id": result[0],
+            "is_active": result[1],
+            "coord_x": coord_x,
+            "coord_y": coord_y,
+        }
 
     def find_compound_id(self, compound_name):
         self.cursor.execute("SELECT compound_id FROM Compounds WHERE compound_name = ?", (compound_name,))
 
-    def insert_into_table_images(self, compound_id, concentration, folder_path, image_path):
+    def insert_into_table_images(self, compound_id, folder_path, dapi, tubulin, actin):
         self.cursor.execute('''
-                        INSERT INTO Images (compound_id, concentration, folder_path, image_path)
-                        VALUES (?, ?, ?, ?)
-                    ''', (compound_id, concentration, folder_path, image_path))
+                        INSERT INTO Images (compound_id, folder_path, dapi_path, tubulin_path, actin_path)
+                        VALUES (?, ?, ?, ?, ?)
+                    ''', (compound_id, folder_path, dapi, actin, tubulin))
         
     def insert_into_color_by_concentration(self, r, g, b):
         self.cursor.execute('''

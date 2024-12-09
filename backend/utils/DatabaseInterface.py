@@ -34,6 +34,14 @@ class DatabaseInterface(ABC):
         pass
 
     @abstractmethod
+    def update_compound_coordinates(self, compound_id, new_x, new_y, is_active):
+        pass
+
+    @abstractmethod
+    def fetch_compound_by_name_and_concentration(self, compound_name, concentration):
+        pass
+
+    @abstractmethod
     def find_compound_id(self, compound_name):
         pass
     
@@ -42,7 +50,7 @@ class DatabaseInterface(ABC):
         pass
 
     @abstractmethod
-    def insert_into_table_images(self, compound_id, concentration, folder_path, image_path):
+    def insert_into_table_images(self, compound_id, folder_path, dapi, tubulin, actin):
         pass   
 
     @abstractmethod

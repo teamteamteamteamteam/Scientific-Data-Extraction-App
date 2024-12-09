@@ -2,12 +2,19 @@ import csv
 import umap
 import pandas as pd
 from pathlib import Path
+from UsablePaths import Paths
+from DatabaseInterface import DatabaseInterface
 
 class CalculateVectors:
-    def __init__(self, formatted_folder_path, original_folder_path):
+    def __init__(self, formatted_folder_path, original_folder_path, database: DatabaseInterface):
         self.formatted_folder_path = formatted_folder_path
         self.original_folder_path = original_folder_path
         self.data = []
+        self.database = database
+        self.database.connect()
+
+    def __del__(self):
+        self.database.close()
 
     def calcualte_averange_from_file(self, folder_name):
         total_sum = 0
@@ -77,9 +84,9 @@ class CalculateVectors:
         df = pd.read_csv(csv_file_path)
 
         file_names = {
-            "FileName_Actin": df["FileName_Actin"].tolist(),
             "FileName_DAPI": df["FileName_DAPI"].tolist(),
             "FileName_Tubulin": df["FileName_Tubulin"].tolist(),
+            "FileName_Actin": df["FileName_Actin"].tolist(),
         }
 
         return file_names
@@ -93,16 +100,48 @@ class CalculateVectors:
             entry["x"] = embedding[0]
             entry["y"] = embedding[1]
 
-    def print_converted_data(self):
+    def save_converted_data_to_database(self):
+        image_data = pd.read_csv(Paths.IMAGES_CSV_PATH)
+
         for entry in self.data:
-            print(f"Folder: {entry['folder_name']}, Współrzędne: ({entry['x']}, {entry['y']})")
-            # print(f"Zdjęcia: {entry['images']}")
+            first_image_dapi = entry["images"]["FileName_DAPI"][0]
+            image_row = image_data.loc[image_data["Image_FileName_DAPI"] == first_image_dapi]
 
+            if image_row.empty:
+                print(f"No data in the file for the photo {first_image_dapi}.")
+                continue
 
-formatted_folder_path = Path(__file__).parent / "formatted"
-original_folder_path = Path(__file__).parent / "original"
-# calculateVectors = CalculateVectors(str(formatted_folder_path))
-calculateVectors = CalculateVectors(str(formatted_folder_path), str(original_folder_path))
-calculateVectors.iterate_formatted_folder()
-calculateVectors.convert_vectors_to_2D()
-calculateVectors.print_converted_data()
+            compound_name = image_row.iloc[0]["Image_Metadata_Compound"]
+            concentration = image_row.iloc[0]["Image_Metadata_Concentration"]
+
+            compound_data = self.database.fetch_compound_by_name_and_concentration(compound_name, concentration)
+
+            compound_id = compound_data["compound_id"]
+            is_active = compound_data["is_active"]
+            old_x = compound_data["coord_x"]
+            old_y = compound_data["coord_y"]
+
+            if is_active == 0:
+                new_x, new_y = entry["x"], entry["y"]
+                self.database.update_compound_coordinates(compound_id, new_x, new_y, is_active=1)
+            else:
+                new_x = (old_x + entry["x"]) / 2 if old_x is not None else entry["x"]
+                new_y = (old_y + entry["y"]) / 2 if old_y is not None else entry["y"]
+                self.database.update_compound_coordinates(compound_id, new_x, new_y, is_active=1)
+
+            for dapi, tubulin, actin in zip(
+                entry["images"]["FileName_DAPI"],
+                entry["images"]["FileName_Tubulin"],
+                entry["images"]["FileName_Actin"]
+            ):
+                image_row = image_data.loc[image_data["Image_FileName_DAPI"] == dapi]
+
+                if image_row.empty:
+                    print(f"Brak danych w pliku dla zdjęcia {dapi}.")
+                    continue
+
+                folder_path = image_row.iloc[0]["Image_PathName_DAPI"]
+                
+                self.database.insert_into_table_images(compound_id, folder_path, dapi, tubulin, actin)
+
+            self.database.commit()
