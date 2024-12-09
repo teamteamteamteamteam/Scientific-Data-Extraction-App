@@ -18,7 +18,7 @@ class DatabaseInterface(ABC):
         pass
     
     @abstractmethod
-    def insert_into_table_compounds(self, compound_name, compound_concentration, is_active):
+    def insert_into_table_compounds(self, compound_name, compound_concentration, smiles, is_active):
         pass
 
     @abstractmethod

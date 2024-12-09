@@ -109,11 +109,11 @@ class SQLiteDatabase(DatabaseInterface):
             print(f"Error creating Color_by_moa table: {e}")
 
     # Table operations
-    def insert_into_table_compounds(self, compound_name, compound_concentration, is_active):
+    def insert_into_table_compounds(self, compound_name, compound_concentration, smiles, is_active):
         self.cursor.execute('''
-                    INSERT INTO Compounds (compound_name, compound_concentration, is_active)
-                    VALUES (?, ?, ?)
-                ''', (compound_name, compound_concentration, is_active))
+                    INSERT INTO Compounds (compound_name, compound_concentration, smiles, is_active)
+                    VALUES (?, ?, ?, ?)
+                ''', (compound_name, compound_concentration, smiles, is_active))
         
     def update_coords_table_compounds(self, compound_name, coord_x, coord_y):
         self.cursor.execute('''
