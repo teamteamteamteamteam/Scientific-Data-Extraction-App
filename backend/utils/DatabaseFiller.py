@@ -23,9 +23,15 @@ class DatabaseFiller:
         self.compounds = image_data[["Image_Metadata_Compound", "Image_Metadata_Concentration"]].drop_duplicates()
         
     def fill_compounds_table(self):
+        smiles_data = pd.read_csv(Paths.COMPOUND_CSV_PATH)
+        smiles_mapping = dict(zip(smiles_data["compound"], smiles_data["smiles"])) # Map {compound: smiles}
+
         for _, compound in self.compounds.iterrows():
+            smiles_value = smiles_mapping.get(compound["Image_Metadata_Compound"], None)
+
             self.database.insert_into_table_compounds(compound["Image_Metadata_Compound"], 
                                                   compound["Image_Metadata_Concentration"], 
+                                                  smiles_value,
                                                   0)
         self.database.commit()
 
