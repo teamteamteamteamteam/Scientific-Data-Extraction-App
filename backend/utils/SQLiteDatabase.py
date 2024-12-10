@@ -136,7 +136,7 @@ class SQLiteDatabase(DatabaseInterface):
                     UPDATE Compounds 
                     SET coord_x = ?, coord_y = ?, is_active = ?
                     WHERE compound_id = ?
-                ''', (new_x, new_y, is_active, compound_id))
+                ''', (round(abs(float(new_x)), 3), round(abs(float(new_y)), 3), is_active, compound_id))
 
     def updata_compounds_empty_moa(self, moa_id):
         self.cursor.execute('''
@@ -149,21 +149,21 @@ class SQLiteDatabase(DatabaseInterface):
         self.cursor.execute('''SELECT compound_id, is_active, coord_x, coord_y 
                             FROM Compounds 
                             WHERE compound_name = ? AND compound_concentration = ?
-                            ''', (compound_name, concentration,))
+                            ''', (compound_name, concentration))
         result = self.cursor.fetchone()
     
         if result is None:
             return None
         
         # Obsługa konwersji bajtów na float
-        coord_x = float.fromhex(result[2].hex()) if isinstance(result[2], bytes) else result[2]
-        coord_y = float.fromhex(result[3].hex()) if isinstance(result[3], bytes) else result[3]
+        # coord_x = float.fromhex(result[2].hex()) if isinstance(result[2], bytes) else result[2]
+        # coord_y = float.fromhex(result[3].hex()) if isinstance(result[3], bytes) else result[3]
     
         return {
             "compound_id": result[0],
             "is_active": result[1],
-            "coord_x": coord_x,
-            "coord_y": coord_y,
+            "coord_x": result[2],
+            "coord_y": result[3],
         }
 
     def find_compound_id(self, compound_name):
