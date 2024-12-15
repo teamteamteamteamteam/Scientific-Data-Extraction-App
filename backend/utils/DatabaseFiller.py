@@ -1,4 +1,3 @@
-import csv
 import random
 import pandas as pd
 from DatabaseInterface import DatabaseInterface

@@ -22,10 +22,6 @@ class DatabaseInterface(ABC):
         pass
 
     @abstractmethod
-    def update_coords_table_compounds(self, compound_name, coord_x, coord_y):
-        pass
-
-    @abstractmethod
     def update_compounds_moa(self, compound_name, moa_id):
         pass
 
@@ -42,7 +38,7 @@ class DatabaseInterface(ABC):
         pass
 
     @abstractmethod
-    def find_compound_id(self, compound_name):
+    def fetch_all_compounds(self):
         pass
     
     @abstractmethod
