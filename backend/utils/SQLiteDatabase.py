@@ -1,5 +1,5 @@
 import sqlite3
-from DatabaseInterface import DatabaseInterface
+from .DatabaseInterface import DatabaseInterface
 
 class SQLiteDatabase(DatabaseInterface):
     # Singleton: A single instance for the entire application
@@ -117,13 +117,6 @@ class SQLiteDatabase(DatabaseInterface):
                     VALUES (?, ?, ?, ?)
                 ''', (compound_name, compound_concentration, smiles, is_active))
         
-    def update_coords_table_compounds(self, compound_name, coord_x, coord_y):
-        self.cursor.execute('''
-                    UPDATE Compounds 
-                    SET coord_x = ?, coord_y = ?
-                    WHERE compound_name = ?
-                ''', (coord_x, coord_y, compound_name))
-        
     def update_compounds_moa(self, compound_name, moa_id):
         self.cursor.execute('''
                     UPDATE Compounds 
@@ -154,10 +147,6 @@ class SQLiteDatabase(DatabaseInterface):
     
         if result is None:
             return None
-        
-        # Obsługa konwersji bajtów na float
-        # coord_x = float.fromhex(result[2].hex()) if isinstance(result[2], bytes) else result[2]
-        # coord_y = float.fromhex(result[3].hex()) if isinstance(result[3], bytes) else result[3]
     
         return {
             "compound_id": result[0],
@@ -165,9 +154,14 @@ class SQLiteDatabase(DatabaseInterface):
             "coord_x": result[2],
             "coord_y": result[3],
         }
-
-    def find_compound_id(self, compound_name):
-        self.cursor.execute("SELECT compound_id FROM Compounds WHERE compound_name = ?", (compound_name,))
+    
+    def fetch_all_compounds(self):
+        self.cursor.execute("""
+                            SELECT compound_name, compound_concentration, coord_x, coord_y
+                            FROM Compounds
+                            WHERE is_active = 1
+                            """)
+        return self.cursor.fetchall()
 
     def insert_into_table_images(self, compound_id, folder_path, dapi, tubulin, actin):
         self.cursor.execute('''
