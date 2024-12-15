@@ -40,6 +40,18 @@ class DatabaseInterface(ABC):
     @abstractmethod
     def fetch_all_compounds(self):
         pass
+
+    @abstractmethod
+    def fetch_all_compounds_colored_by_concentration(self):
+        pass
+
+    @abstractmethod
+    def fetch_all_compounds_colored_by_moa(self):
+        pass
+
+    @abstractmethod
+    def fetch_compound_details(self, compound_name, compound_concentration):
+        pass
     
     @abstractmethod
     def create_table_images(self):
