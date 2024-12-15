@@ -162,6 +162,33 @@ class SQLiteDatabase(DatabaseInterface):
                             WHERE is_active = 1
                             """)
         return self.cursor.fetchall()
+    
+    def fetch_all_compounds_colored_by_concentration(self):
+        self.cursor.execute("""
+                            SELECT c.compound_name, c.compound_concentration, c.coord_x, c.coord_y, col.R, col.G, col.B
+                            FROM Compounds c
+                            INNER JOIN Color_by_concentration col ON c.color_id = col.color_id
+                            WHERE c.is_active = 1
+                            """)
+        return self.cursor.fetchall()
+    
+    def fetch_all_compounds_colored_by_moa(self):
+        self.cursor.execute("""
+                            SELECT c.compound_name, c.compound_concentration, c.coord_x, c.coord_y, col.R, col.G, col.B
+                            FROM Compounds c
+                            INNER JOIN Color_by_moa col ON c.moa_id = col.moa_id
+                            WHERE c.is_active = 1
+                            """)
+        return self.cursor.fetchall()
+
+    def fetch_compound_details(self, compound_name, compound_concentration):
+        self.cursor.execute("""
+                            SELECT c.smiles, col.moa, col.moa_concentration
+                            FROM Compounds c
+                            INNER JOIN Color_by_moa col ON c.moa_id = col.moa_id
+                            WHERE c.compound_name = ? AND c.compound_concentration = ?
+                            """, (compound_name, compound_concentration))
+        return self.cursor.fetchone()
 
     def insert_into_table_images(self, compound_id, folder_path, dapi, tubulin, actin):
         self.cursor.execute('''
