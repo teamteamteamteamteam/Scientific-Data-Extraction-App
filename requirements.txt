@@ -16,3 +16,5 @@ scikit-learn==1.5.2
 SQLAlchemy
 tqdm==4.67.0
 umap-learn==0.5.7
+fastapi==0.100.0
+uvicorn==0.22.0
