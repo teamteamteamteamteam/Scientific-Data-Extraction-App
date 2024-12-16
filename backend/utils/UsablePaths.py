@@ -10,3 +10,4 @@ class Paths:
     DATABASE_PATH = database_folder / 'database.db'
     COMPOUND_CSV_PATH = resources_folder / 'BBBC021_v1_compound.csv'
     IMAGES_CSV_PATH = resources_folder / 'BBBC021_v1_image.csv'
+    MOA_CSV_PATH = resources_folder / 'BBBC021_v1_moa.csv'
