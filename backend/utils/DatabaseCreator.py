@@ -11,7 +11,6 @@ class DatabaseCreator:
         self.database.close()
 
     def create_table(self, table_name):
-        # Factory method to create a table based on the name
         if table_name == 'compounds':
             self.create_table_compounds()
         elif table_name == 'images':
