@@ -1,7 +1,7 @@
 import random
 import pandas as pd
-from DatabaseInterface import DatabaseInterface
-from UsablePaths import Paths
+from .DatabaseInterface import DatabaseInterface
+from .UsablePaths import Paths
 
 class DatabaseFiller:
     def __init__(self, database: DatabaseInterface):

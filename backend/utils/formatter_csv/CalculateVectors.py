@@ -2,8 +2,13 @@ import csv
 import umap
 import pandas as pd
 from pathlib import Path
-from UsablePaths import Paths
-from DatabaseInterface import DatabaseInterface
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from backend.utils.UsablePaths import Paths
+from backend.utils.DatabaseInterface import DatabaseInterface
 
 class CalculateVectors:
     def __init__(self, formatted_folder_path, original_folder_path, database: DatabaseInterface):
