@@ -10,7 +10,7 @@ from backend.utils.DatabaseFiller import DatabaseFiller
 
 def test_class_implements_database_interface_with_mock():
     # Create a mock instance of SQLiteDatabase with the path
-    db_instance = SQLiteDatabase.SQLiteDatabase('path_to_db')
+    db_instance = SQLiteDatabase('path_to_db')
     
     # Mock the methods of the database class
     db_instance.connect = MagicMock()
@@ -26,7 +26,7 @@ def test_class_implements_database_interface_with_mock():
 
 
     # Initialize DatabaseCreator with the mock database instance
-    db_creator = DatabaseCreator.DatabaseCreator(db_instance)
+    db_creator = DatabaseCreator(db_instance)
 
     # Check that the database object in the DatabaseCreator has the necessary methods
     assert hasattr(db_creator.database, 'connect')
@@ -42,7 +42,7 @@ def test_class_implements_database_interface_with_mock():
 
 
     # Test the DatabaseFiller and check if the methods are implemented
-    db_filler = DatabaseFiller.DatabaseFiller(db_instance)
+    db_filler = DatabaseFiller(db_instance)
     db_filler.fill_data_from_csv = MagicMock()  # Mock the fill method
     
     assert hasattr(db_filler, 'database')
