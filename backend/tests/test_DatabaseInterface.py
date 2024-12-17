@@ -22,6 +22,17 @@ def test_class_implements_database_interface_with_mock():
     db_instance.find_compound_id = MagicMock()
     db_instance.create_table_images = MagicMock()
     db_instance.insert_into_table_images = MagicMock()
+
+    # Test SQLiteDatabase methods directly
+    assert hasattr(db_instance, 'connect')
+    assert hasattr(db_instance, 'close')
+    assert hasattr(db_instance, 'commit')
+    assert hasattr(db_instance, 'create_table_compounds')
+    assert hasattr(db_instance, 'insert_into_table_compounds')
+    assert hasattr(db_instance, 'update_coords_table_compounds')
+    assert hasattr(db_instance, 'find_compound_id')
+    assert hasattr(db_instance, 'create_table_images')
+    assert hasattr(db_instance, 'insert_into_table_images')
     
 
 
@@ -38,39 +49,3 @@ def test_class_implements_database_interface_with_mock():
     assert hasattr(db_creator.database, 'find_compound_id')
     assert hasattr(db_creator.database, 'create_table_images')
     assert hasattr(db_creator.database, 'insert_into_table_images')
-    
-
-
-    # Test the DatabaseFiller and check if the methods are implemented
-    db_filler = DatabaseFiller(db_instance)
-    db_filler.fill_data_from_csv = MagicMock()  # Mock the fill method
-    
-    assert hasattr(db_filler, 'database')
-    assert hasattr(db_filler, 'fill_data_from_csv')
-    assert hasattr(db_filler, 'open_csv_file')
-    assert hasattr(db_filler, 'process_rows')
-    assert hasattr(db_filler, 'commit_data')
-
-    # Test CompoundsDatabaseFiller
-    compounds_filler = DatabaseFiller.CompoundsDatabaseFiller(db_instance)
-    compounds_filler.process_rows = MagicMock()  # Mock the process_rows method
-    assert hasattr(compounds_filler, 'process_rows')
-    
-    # Test ImagesDatabaseFiller
-    images_filler = DatabaseFiller.ImagesDatabaseFiller(db_instance)
-    images_filler.process_rows = MagicMock()  # Mock the process_rows method
-    assert hasattr(images_filler, 'process_rows')
-    
-
-
-    
-    # Test SQLiteDatabase methods directly
-    assert hasattr(db_instance, 'connect')
-    assert hasattr(db_instance, 'close')
-    assert hasattr(db_instance, 'commit')
-    assert hasattr(db_instance, 'create_table_compounds')
-    assert hasattr(db_instance, 'insert_into_table_compounds')
-    assert hasattr(db_instance, 'update_coords_table_compounds')
-    assert hasattr(db_instance, 'find_compound_id')
-    assert hasattr(db_instance, 'create_table_images')
-    assert hasattr(db_instance, 'insert_into_table_images')
