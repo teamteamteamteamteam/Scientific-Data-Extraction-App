@@ -58,20 +58,22 @@ function ScatterPlot() {
                 <option value={COLOR_BY_CRITERIUM.CONCENTRATION}>Concentration</option>
                 </select>
             </div>
-            <Plot
-                data={plotData}
-                layout={{
-                    title: `Compounds colored by ${colorBy}`,
-                    dragmode: "pan",
-                    xaxis: { title: "" },
-                    yaxis: { title: "" },
-                }}
-                config={{
-                    scrollZoom: true,
-                    responsive: true,
-                }}
-                onClick={handleClick}
-            />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+                <Plot
+                    data={plotData}
+                    layout={{
+                        title: `Compounds colored by ${colorBy}`,
+                        dragmode: "pan",
+                        xaxis: { title: "" },
+                        yaxis: { title: "" },
+                    }}
+                    config={{
+                        scrollZoom: true,
+                        responsive: true,
+                    }}
+                    onClick={handleClick}
+                />
+            </div>
         </>
     );
 }
