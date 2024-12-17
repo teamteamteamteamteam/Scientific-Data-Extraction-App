@@ -1,8 +1,8 @@
-from DatabaseCreator import *
-from DatabaseFiller import *
-from UsablePaths import Paths
-from SQLiteDatabase import SQLiteDatabase
-from formatter_csv.CalculateVectors import CalculateVectors
+from .DatabaseCreator import *
+from .DatabaseFiller import *
+from .UsablePaths import Paths
+from .SQLiteDatabase import SQLiteDatabase
+from .formatter_csv.CalculateVectors import CalculateVectors
 from pathlib import Path
 
 database = SQLiteDatabase(Paths.DATABASE_PATH)
