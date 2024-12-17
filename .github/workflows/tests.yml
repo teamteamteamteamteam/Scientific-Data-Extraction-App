@@ -12,15 +12,20 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-    - name: Run tests
-      run: pytest --cov=backend backend/tests/
+    - name: Run tests with coverage
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        pytest --cov=backend backend/tests/
