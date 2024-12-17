@@ -1,4 +1,4 @@
-from DatabaseInterface import DatabaseInterface
+from .DatabaseInterface import DatabaseInterface
 
 class DatabaseCreator:
     def __init__(self, database: DatabaseInterface):

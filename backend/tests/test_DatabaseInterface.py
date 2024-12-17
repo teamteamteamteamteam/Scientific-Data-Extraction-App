@@ -1,19 +1,14 @@
-import sys
-import os
-
-current = os.path.dirname(os.path.realpath(__file__)) # Get the current file directory
-parent = os.path.dirname(current) # Get the parent directory of the current directory
-sys.path.append(parent) # Add the parent directory to sys.path
-
 import pytest
 from unittest.mock import MagicMock
 
-import DatabaseInterface
-import SQLiteDatabase
-import DatabaseCreator
-import DatabaseFiller
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-
+from backend.utils.DatabaseInterface import DatabaseInterface
+from backend.utils.SQLiteDatabase import SQLiteDatabase
+from backend.utils.DatabaseCreator import DatabaseCreator
+from backend.utils.DatabaseFiller import DatabaseFiller
 
 def test_class_implements_database_interface_with_mock():
     # Create a mock instance of SQLiteDatabase with the path
