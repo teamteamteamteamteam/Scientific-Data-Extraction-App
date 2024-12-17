@@ -1,11 +1,9 @@
-import pytest
 from unittest.mock import MagicMock
 
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from backend.utils.DatabaseInterface import DatabaseInterface
 from backend.utils.SQLiteDatabase import SQLiteDatabase
 from backend.utils.DatabaseCreator import DatabaseCreator
 from backend.utils.DatabaseFiller import DatabaseFiller
