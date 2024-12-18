@@ -6,7 +6,7 @@ const COLOR_BY_CRITERIUM = {
     CONCENTRATION: 'concentration'
 };
 
-function ScatterPlot() {
+function ScatterPlot( { onClick } ) {
     const [colorBy, setColorBy] = useState(COLOR_BY_CRITERIUM.CONCENTRATION)
     const [plotData, setPlotData] = useState();
 
@@ -21,14 +21,15 @@ function ScatterPlot() {
                     size: 12,
                     color: rawData.map((point) => `rgb(${point.color.R},${point.color.G},${point.color.B})`)
                 },
+                text: rawData.map((point) => point.name),
+                customdata: rawData.map((point) => ({
+                    concentration: point.concentration,
+                    name: point.name,
+                })),
+                hoverinfo: "text"
             },
         ];
-    } 
-
-    const handleClick = (event) => {
-        const point = event.points[0];
-        alert(`Clicked on X=${point.x}, Y=${point.y}`);
-    };
+    }
 
     const fetchData = async (colorBy) => {
         const apiURL = `http://127.0.0.1:8000/compounds/colored_by_${colorBy}`
@@ -58,7 +59,7 @@ function ScatterPlot() {
                 <option value={COLOR_BY_CRITERIUM.CONCENTRATION}>Concentration</option>
                 </select>
             </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center"}}>
                 <Plot
                     data={plotData}
                     layout={{
@@ -66,12 +67,12 @@ function ScatterPlot() {
                         dragmode: "pan",
                         xaxis: { title: "" },
                         yaxis: { title: "" },
+                        autosize: true,
                     }}
                     config={{
                         scrollZoom: true,
-                        responsive: true,
                     }}
-                    onClick={handleClick}
+                    onClick={(e) => onClick(e.points[0].customdata)}
                 />
             </div>
         </>
