@@ -1,12 +1,12 @@
-import ScatterPlot from './components/ScatterPlot/ScatterPlot'
 import './App.css'
+import Dashboard from './pages/Dashboard/Dashboard'
 
 function App() {
 
   return (
     <>
       <p>great app for scientific stuff</p>
-      <ScatterPlot/>
+      <Dashboard/>
     </>
   )
 }
