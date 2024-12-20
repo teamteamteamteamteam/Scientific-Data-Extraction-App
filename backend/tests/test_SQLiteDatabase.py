@@ -3,6 +3,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from unittest import mock
 import textwrap
+import sqlite3
 from sqlite3 import Connection, Cursor
 import sys
 import os
@@ -46,6 +47,24 @@ def test_connect(mocker):
     mock_connect.assert_called_once_with("test.db")
     assert db.conn is not None
 
+# Test dla sytuacji, gdy sqlite3.connect rzuca wyjątek
+def test_connect_raises_runtime_error(mocker):
+    db = SQLiteDatabase("test.db")
+    db.conn = None  # Wyraźnie ustaw początkowy stan `conn` na `None`
+
+    # Mockowanie sqlite3.connect, aby rzucało wyjątek sqlite3.Error
+    mocker.patch('sqlite3.connect', side_effect=sqlite3.Error("Mocked connection error"))
+
+    # Sprawdzenie, czy metoda connect() rzuca odpowiedni RuntimeError
+    with pytest.raises(RuntimeError, match="Failed to connect to the database: Mocked connection error"):
+        db.connect()
+
+    # Upewnienie się, że `db.conn` nadal jest `None` po wyjątku
+    assert db.conn is None
+
+
+
+
 # Test dla close()
 def test_close(mocker):
     # Mockowanie połączenia i kursora
@@ -65,6 +84,37 @@ def test_close(mocker):
     db.close()
     mock_cursor.close.assert_called_once()
     mock_conn.close.assert_called_once()
+
+def test_commit_success(mocker):
+    # Mockowanie połączenia
+    mock_conn = MagicMock()
+    db = SQLiteDatabase("test.db")
+    db.conn = mock_conn  # Ustawienie aktywnego połączenia
+
+    # Wywołanie commit
+    db.commit()
+
+    # Sprawdzamy, czy `commit` został wywołany
+    mock_conn.commit.assert_called_once()
+
+def test_commit_raises_runtime_error_on_commit_failure(mocker):
+    # Mockowanie połączenia, aby rzucało wyjątek podczas `commit`
+    mock_conn = MagicMock()
+    mock_conn.commit.side_effect = sqlite3.Error("Mocked commit error")
+    db = SQLiteDatabase("test.db")
+    db.conn = mock_conn  # Ustawienie aktywnego połączenia
+
+    # Sprawdzamy, czy metoda rzuca `RuntimeError` z odpowiednim komunikatem
+    with pytest.raises(RuntimeError, match="Error during transaction commit: Mocked commit error"):
+        db.commit()
+
+def test_commit_raises_runtime_error_no_connection():
+    db = SQLiteDatabase("test.db")
+    db.conn = None  # Brak aktywnego połączenia
+
+    # Sprawdzamy, czy metoda rzuca `RuntimeError` z odpowiednim komunikatem
+    with pytest.raises(RuntimeError, match="No active database connection."):
+        db.commit()
 
 
 # Test dla create_table_compounds()
@@ -88,6 +138,22 @@ def test_create_table_compounds(mocker):
     db.create_table_compounds()
     check_sql_query(mock_cursor, expected_query)
 
+# Test dla create_table_compounds w przypadku błędu
+def test_create_table_compounds_raises_error(mocker, capsys):
+    db = SQLiteDatabase("test.db")
+    mock_cursor = MagicMock()
+    mock_cursor.execute.side_effect = sqlite3.Error("Mocked error creating Compounds table")
+    db.cursor = mock_cursor
+
+    # Uruchomienie metody
+    db.create_table_compounds()
+
+    # Przechwycenie wyjścia
+    captured = capsys.readouterr()
+
+    # Sprawdzenie, czy komunikat o błędzie pojawił się w standardowym wyjściu
+    assert "Error creating Compounds table: Mocked error creating Compounds table" in captured.out
+
 # Test dla create_table_images()
 def test_create_table_images(mocker):
     db = SQLiteDatabase("test.db")
@@ -107,6 +173,22 @@ def test_create_table_images(mocker):
     db.create_table_images()
     check_sql_query(mock_cursor, expected_query)
 
+# Test dla create_table_images w przypadku błędu
+def test_create_table_images_raises_error(mocker, capsys):
+    db = SQLiteDatabase("test.db")
+    mock_cursor = MagicMock()
+    mock_cursor.execute.side_effect = sqlite3.Error("Mocked error creating Images table")
+    db.cursor = mock_cursor
+
+    # Uruchomienie metody
+    db.create_table_images()
+
+    # Przechwycenie wyjścia
+    captured = capsys.readouterr()
+
+    # Sprawdzenie, czy komunikat o błędzie pojawił się w standardowym wyjściu
+    assert "Error creating Images table: Mocked error creating Images table" in captured.out
+
 # Test dla create_table_color_by_concentration()
 def test_create_table_color_by_concentration(mocker):
     db = SQLiteDatabase("test.db")
@@ -122,6 +204,23 @@ def test_create_table_color_by_concentration(mocker):
     '''
     db.create_table_color_by_concentration()
     check_sql_query(mock_cursor, expected_query)
+
+# Test dla create_table_color_by_concentration w przypadku błędu
+def test_create_table_color_by_concentration_raises_error(mocker, capsys):
+    db = SQLiteDatabase("test.db")
+    mock_cursor = MagicMock()
+    mock_cursor.execute.side_effect = sqlite3.Error("Mocked error creating Color_by_concentration table")
+    db.cursor = mock_cursor
+
+    # Uruchomienie metody
+    db.create_table_color_by_concentration()
+
+    # Przechwycenie wyjścia
+    captured = capsys.readouterr()
+
+    # Sprawdzenie, czy komunikat o błędzie pojawił się w standardowym wyjściu
+    assert "Error creating Color_by_concentration table: Mocked error creating Color_by_concentration table" in captured.out
+
 
 # Test dla create_table_color_by_moa()
 def test_create_table_color_by_moa(mocker):
@@ -141,6 +240,23 @@ def test_create_table_color_by_moa(mocker):
     db.create_table_color_by_moa()
     check_sql_query(mock_cursor, expected_query)
 
+# Test dla create_table_color_by_moa w przypadku błędu
+def test_create_table_color_by_moa_raises_error(mocker, capsys):
+    db = SQLiteDatabase("test.db")
+    mock_cursor = MagicMock()
+    mock_cursor.execute.side_effect = sqlite3.Error("Mocked error creating Color_by_moa table")
+    db.cursor = mock_cursor
+
+    # Uruchomienie metody
+    db.create_table_color_by_moa()
+
+    # Przechwycenie wyjścia
+    captured = capsys.readouterr()
+
+    # Sprawdzenie, czy komunikat o błędzie pojawił się w standardowym wyjściu
+    assert "Error creating Color_by_moa table: Mocked error creating Color_by_moa table" in captured.out
+
+
 # Test dla insert_into_table_compounds()
 def test_insert_into_table_compounds(mocker):
     db = SQLiteDatabase("test.db")
@@ -153,4 +269,42 @@ def test_insert_into_table_compounds(mocker):
     db.insert_into_table_compounds("Test Compound", 10.0, "C1=CC=CC=C1", 1)
     check_sql_query(mock_cursor, expected_query)
 
-# Możesz dodać inne testy w podobny sposób.
+# Test dla update_compounds_moa
+def test_update_compounds_moa(mocker):
+    db = SQLiteDatabase("test.db")
+    mock_cursor, _ = mock_db_connection(mocker, db)
+
+    expected_query = '''
+        UPDATE Compounds 
+        SET moa_id = ?
+        WHERE compound_name = ?
+    '''
+    db.update_compounds_moa("Test Compound", 123)
+    check_sql_query(mock_cursor, expected_query)
+
+# Test dla update_compound_coordinates
+def test_update_compound_coordinates(mocker):
+    db = SQLiteDatabase("test.db")
+    mock_cursor, _ = mock_db_connection(mocker, db)
+
+    expected_query = '''
+        UPDATE Compounds 
+        SET coord_x = ?, coord_y = ?, is_active = ?
+        WHERE compound_id = ?
+    '''
+    db.update_compound_coordinates(1, "100.123", "200.456", 1)
+    check_sql_query(mock_cursor, expected_query)
+
+# Test dla updata_compounds_empty_moa
+def test_updata_compounds_empty_moa(mocker):
+    db = SQLiteDatabase("test.db")
+    mock_cursor, _ = mock_db_connection(mocker, db)
+
+    expected_query = '''
+        UPDATE Compounds 
+        SET moa_id = ?
+        WHERE moa_id IS NULL
+    '''
+    db.updata_compounds_empty_moa(123)
+    check_sql_query(mock_cursor, expected_query)
+
