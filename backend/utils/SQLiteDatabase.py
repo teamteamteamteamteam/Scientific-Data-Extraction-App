@@ -110,13 +110,36 @@ class SQLiteDatabase(DatabaseInterface):
         except sqlite3.Error as e:
             print(f"Error creating Color_by_moa table: {e}")
 
-    # Table operations
+    # Table insert methods
     def insert_into_table_compounds(self, compound_name, compound_concentration, smiles, is_active):
         self.cursor.execute('''
                     INSERT INTO Compounds (compound_name, compound_concentration, smiles, is_active)
                     VALUES (?, ?, ?, ?)
                 ''', (compound_name, compound_concentration, smiles, is_active))
+
+    def insert_into_table_images(self, compound_id, folder_path, dapi, tubulin, actin):
+        self.cursor.execute('''
+                        INSERT INTO Images (compound_id, folder_path, dapi_path, tubulin_path, actin_path)
+                        VALUES (?, ?, ?, ?, ?)
+                    ''', (compound_id, folder_path, dapi, actin, tubulin))
         
+    def insert_into_color_by_concentration(self, r, g, b):
+        self.cursor.execute('''
+                        INSERT INTO Color_by_concentration (R, G, B)
+                        VALUES (?, ?, ?)
+                    ''', (r, g, b))
+        self.conn.commit()
+        return self.cursor.lastrowid
+
+    def insert_into_color_table_by_moa(self, moa, concentration, r, g, b):
+        self.cursor.execute('''
+                        INSERT INTO Color_by_moa (moa, moa_concentration, R, G, B)
+                        VALUES (?, ?, ?, ?, ?)
+                    ''', (moa, concentration, r, g, b))
+        self.conn.commit()
+        return self.cursor.lastrowid
+
+    # Table update methods
     def update_compounds_moa(self, compound_name, moa_id):
         self.cursor.execute('''
                     UPDATE Compounds 
@@ -138,6 +161,14 @@ class SQLiteDatabase(DatabaseInterface):
                     WHERE moa_id IS NULL
                 ''', (moa_id,))
         
+    def update_compounds_color_concentration(self, concentration, color_id):
+        self.cursor.execute('''
+                    UPDATE Compounds 
+                    SET color_id = ?
+                    WHERE compound_concentration  = ?
+                ''', (color_id, concentration))
+    
+    # Table fetch methods
     def fetch_compound_by_name_and_concentration(self, compound_name, concentration):
         self.cursor.execute('''SELECT compound_id, is_active, coord_x, coord_y 
                             FROM Compounds 
@@ -189,32 +220,3 @@ class SQLiteDatabase(DatabaseInterface):
                             WHERE c.compound_name = ? AND c.compound_concentration = ?
                             """, (compound_name, compound_concentration))
         return self.cursor.fetchone()
-
-    def insert_into_table_images(self, compound_id, folder_path, dapi, tubulin, actin):
-        self.cursor.execute('''
-                        INSERT INTO Images (compound_id, folder_path, dapi_path, tubulin_path, actin_path)
-                        VALUES (?, ?, ?, ?, ?)
-                    ''', (compound_id, folder_path, dapi, actin, tubulin))
-        
-    def insert_into_color_by_concentration(self, r, g, b):
-        self.cursor.execute('''
-                        INSERT INTO Color_by_concentration (R, G, B)
-                        VALUES (?, ?, ?)
-                    ''', (r, g, b))
-        self.conn.commit()
-        return self.cursor.lastrowid
-    
-    def update_compounds_color_concentration(self, concentration, color_id):
-        self.cursor.execute('''
-                    UPDATE Compounds 
-                    SET color_id = ?
-                    WHERE compound_concentration  = ?
-                ''', (color_id, concentration))
-        
-    def insert_into_color_table_by_moa(self, moa, concentration, r, g, b):
-        self.cursor.execute('''
-                        INSERT INTO Color_by_moa (moa, moa_concentration, R, G, B)
-                        VALUES (?, ?, ?, ?, ?)
-                    ''', (moa, concentration, r, g, b))
-        self.conn.commit()
-        return self.cursor.lastrowid
