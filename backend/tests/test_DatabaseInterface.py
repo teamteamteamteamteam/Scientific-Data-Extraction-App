@@ -1,51 +1,49 @@
+import pytest
 from unittest.mock import MagicMock
-
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from backend.utils.SQLiteDatabase import SQLiteDatabase
 from backend.utils.DatabaseCreator import DatabaseCreator
+from backend.utils.DatabaseInterface import DatabaseInterface
 from backend.utils.DatabaseFiller import DatabaseFiller
 
-def test_class_implements_database_interface_with_mock():
-    # Create a mock instance of SQLiteDatabase with the path
-    db_instance = SQLiteDatabase('path_to_db')
-    
-    # Mock the methods of the database class
-    db_instance.connect = MagicMock()
-    db_instance.commit = MagicMock()
-    db_instance.close = MagicMock()
-    db_instance.create_table_compounds = MagicMock()
-    db_instance.insert_into_table_compounds = MagicMock()
-    db_instance.update_coords_table_compounds = MagicMock()
-    db_instance.find_compound_id = MagicMock()
-    db_instance.create_table_images = MagicMock()
-    db_instance.insert_into_table_images = MagicMock()
+@pytest.fixture
+def mock_database():
+    # Mock an SQLiteDatabase instance
+    db_instance = MagicMock(spec=SQLiteDatabase)
+    return db_instance
 
-    # Test SQLiteDatabase methods directly
-    assert hasattr(db_instance, 'connect')
-    assert hasattr(db_instance, 'close')
-    assert hasattr(db_instance, 'commit')
-    assert hasattr(db_instance, 'create_table_compounds')
-    assert hasattr(db_instance, 'insert_into_table_compounds')
-    assert hasattr(db_instance, 'update_coords_table_compounds')
-    assert hasattr(db_instance, 'find_compound_id')
-    assert hasattr(db_instance, 'create_table_images')
-    assert hasattr(db_instance, 'insert_into_table_images')
-    
+def test_sqlite_database_implements_all_interface_methods(mock_database):
+    # Test if SQLiteDatabase implements all methods from DatabaseInterface
+    interface_methods = [
+        method for method in dir(DatabaseInterface)
+        if callable(getattr(DatabaseInterface, method)) and not method.startswith("__")
+    ]
 
+    for method in interface_methods:
+        assert hasattr(mock_database, method), f"Method {method} is not implemented in SQLiteDatabase"
 
-    # Initialize DatabaseCreator with the mock database instance
-    db_creator = DatabaseCreator(db_instance)
+def test_database_creator_uses_database_interface(mock_database):
+    # Test if DatabaseCreator uses a database that implements DatabaseInterface
+    db_creator = DatabaseCreator(mock_database)
 
-    # Check that the database object in the DatabaseCreator has the necessary methods
-    assert hasattr(db_creator.database, 'connect')
-    assert hasattr(db_creator.database, 'close')
-    assert hasattr(db_creator.database, 'commit')
-    assert hasattr(db_creator.database, 'create_table_compounds')
-    assert hasattr(db_creator.database, 'insert_into_table_compounds')
-    assert hasattr(db_creator.database, 'update_coords_table_compounds')
-    assert hasattr(db_creator.database, 'find_compound_id')
-    assert hasattr(db_creator.database, 'create_table_images')
-    assert hasattr(db_creator.database, 'insert_into_table_images')
+    interface_methods = [
+        method for method in dir(DatabaseInterface)
+        if callable(getattr(DatabaseInterface, method)) and not method.startswith("__")
+    ]
+
+    for method in interface_methods:
+        assert hasattr(db_creator.database, method), f"Method {method} is missing in DatabaseCreator's database"
+
+def test_database_filler_uses_database_interface(mock_database):
+    # Test if DatabaseFiller uses a database that implements DatabaseInterface
+    db_filler = DatabaseFiller(mock_database)
+
+    interface_methods = [
+        method for method in dir(DatabaseInterface)
+        if callable(getattr(DatabaseInterface, method)) and not method.startswith("__")
+    ]
+
+    for method in interface_methods:
+        assert hasattr(db_filler.database, method), f"Method {method} is missing in DatabaseFiller's database"
