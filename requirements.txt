@@ -11,6 +11,7 @@ numpy
 pandas
 pytest==8.3.3
 pytest-cov
+pytest-mock
 python-dateutil
 scikit-learn==1.5.2
 SQLAlchemy
