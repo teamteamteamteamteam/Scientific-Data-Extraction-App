@@ -1,9 +1,15 @@
+from pathlib import Path
+import pytest
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from backend.utils.UsablePaths import Paths
-from pathlib import Path
+
+@pytest.fixture
+def paths():
+    # Fixture returning static paths
+    return Paths
 
 def test_database_path():
     # Check if the database path is set correctly
