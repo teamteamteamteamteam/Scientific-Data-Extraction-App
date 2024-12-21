@@ -7,7 +7,6 @@ from backend.utils.SQLiteDatabase import SQLiteDatabase
 
 @pytest.fixture
 def mock_database():
-    # Tworzymy mock obiektu SQLiteDatabase
     return MagicMock(spec=SQLiteDatabase)
 
 def test_connect(mock_database):
