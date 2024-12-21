@@ -2,12 +2,10 @@ from .DatabaseInterface import DatabaseInterface
 
 class DatabaseCreator:
     def __init__(self, database: DatabaseInterface):
-        # Connects to the database and creates tables.
         self.database = database
         self.database.connect()
 
     def __del__(self):
-        # Closes the database connection.
         self.database.close()
 
     def create_table(self, table_name):
