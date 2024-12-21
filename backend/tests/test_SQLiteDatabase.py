@@ -63,7 +63,7 @@ def test_connect_raises_runtime_error(mocker):
     # Ensure `db.conn` is still `None` after the exception
     assert db.conn is None
 
-# Test for close()
+# test for close()
 def test_close_connection(mocker):
     # Mock connection and cursor
     mock_cursor = MagicMock()
@@ -115,7 +115,7 @@ def test_commit_raises_runtime_error_no_connection():
     with pytest.raises(RuntimeError, match="No active database connection."):
         db.commit()
 
-# Test for table creation methods
+# tests for table creation methods
 def test_create_compounds_table(mocker):
     db = SQLiteDatabase("test.db")
     mock_cursor, _ = mock_database_connection(mocker, db)
@@ -246,7 +246,7 @@ def test_create_color_by_moa_table_raises_error(mocker, capsys):
     # Check if the error message appeared in the standard output
     assert "Error creating Color_by_moa table: Mocked error creating Color_by_moa table" in captured.out
 
-# Test for table insert methods
+# tests for table insert methods
 def test_insert_into_table_compounds(mocker):
     db = SQLiteDatabase("test.db")
     mock_cursor, _ = mock_database_connection(mocker, db)
@@ -325,7 +325,7 @@ def test_insert_into_color_table_by_moa(mocker):
     # Checking if the method returned the lastrowid
     assert db.insert_into_color_table_by_moa("Test MOA", 100.0, 0, 255, 0) == 1
 
-# Test for table update methods
+# tests for table update methods
 def test_update_compounds_moa(mocker):
     db = SQLiteDatabase("test.db")
     mock_cursor, _ = mock_database_connection(mocker, db)
@@ -386,7 +386,7 @@ def test_update_compounds_color_concentration(mocker):
     # Verify that the SQL query was executed with the correct parameters
     verify_sql_query(mock_cursor, expected_query)
 
-# Test for table fetch methods
+# tests for table fetch methods
 def test_fetch_compound_by_name_and_concentration(mocker):
     db = SQLiteDatabase("test.db")
     mock_cursor, _ = mock_database_connection(mocker, db)
