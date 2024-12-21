@@ -1,7 +1,5 @@
 from pathlib import Path
 
-
-
 #Path has got overloaded / operator for differenet os
 class Paths:
     database_folder = Path.cwd() / 'backend' / 'database'
