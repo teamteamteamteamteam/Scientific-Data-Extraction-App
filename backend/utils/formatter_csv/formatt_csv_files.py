@@ -22,6 +22,8 @@ class CsvFormatter:
 
 
     def modify_file_path(self, file_path):
+        if self.input_folder_path not in file_path:
+            raise FileNotFoundError
         new_path = file_path.replace(self.input_folder_path, self.output_folder_path)
         base, ext = os.path.splitext(new_path)
         new_path = f"{base}_formatted{ext}"
