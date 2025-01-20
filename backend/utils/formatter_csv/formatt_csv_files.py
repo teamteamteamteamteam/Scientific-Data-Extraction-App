@@ -47,7 +47,7 @@ class CsvFormatter:
                     self.create_folder(directory)
 
             for file in files:
-                if file.endswith('.csv'):
+                if file.endswith('.csv') and not file.startswith('.'):
                     csv_files.append(os.path.join(root, file))
         return csv_files
 
