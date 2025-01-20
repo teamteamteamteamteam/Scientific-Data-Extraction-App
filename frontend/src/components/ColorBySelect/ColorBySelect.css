@@ -1,0 +1,7 @@
+.color-by-select {
+    display: flex;
+    align-items: "center";
+    justify-content: center;
+    margin-bottom: 10px;
+    width: 100%;
+}

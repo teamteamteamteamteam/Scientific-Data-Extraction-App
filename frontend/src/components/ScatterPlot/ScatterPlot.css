@@ -1,0 +1,11 @@
+.plotly-container {
+    height: 80vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    margin-top: 20px;
+}
+  

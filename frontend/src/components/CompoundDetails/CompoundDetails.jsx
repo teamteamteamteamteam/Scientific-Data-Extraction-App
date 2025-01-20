@@ -1,21 +1,26 @@
 import { SmilesSvgRenderer } from 'react-ocl';
-function CompoundDetails({ compoundData }) {
-    return (
-        <>
-            {compoundData ?
-                <>
-                    <h3>Compound details:</h3>
-                    Smiles: {compoundData.smiles} <br />
-                    MOA: {compoundData.moa} <br />
-                    MOA concentration: {compoundData.moa_concentration} <br />
-                    <SmilesSvgRenderer smiles={compoundData.smiles} />
-                </>
-                :
-                <>Select compound</>
-            }
+import "./CompoundDetails.css";
 
-        </>
-    )
+function CompoundDetails({ compoundData }) {
+    return compoundData ? (
+        <div className="compound-info">
+            <h2>Compound Details</h2>
+            <h3>{compoundData.name && compoundData.name.toUpperCase()}</h3>
+            <p><b>Smiles:</b> {compoundData.smiles ? compoundData.smiles : "N/A"}</p>
+            <p><b>MOA:</b> {compoundData.moa ? compoundData.moa : "N/A"}</p>
+            <p><b>MOA Concentration:</b> {compoundData.moa_concentration ? compoundData.moa_concentration : "N/A"}</p>
+            {compoundData.smiles &&
+                <div className="smiles-renderer">
+                    <SmilesSvgRenderer smiles={compoundData.smiles} />
+                </div>
+            }
+        </div>
+        ) 
+        : (
+            <div className="select-compound">
+                Select a compound
+            </div>
+        )
 }
 
 export default CompoundDetails

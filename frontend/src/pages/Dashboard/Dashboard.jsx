@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ScatterPlot from "../../components/ScatterPlot/ScatterPlot";
 import CompoundDetails from "../../components/CompoundDetails/CompoundDetails";
+import './Dashboard.css';
 
 function Dashboard() {
     const [selectedCompound, setSelectedCompound] = useState(null);
@@ -10,7 +11,10 @@ function Dashboard() {
         try {
             const response = await fetch(apiURL);
             const result = await response.json();
-            setSelectedCompound(result[0]);
+            setSelectedCompound({
+                ...result[0],
+                name: name,
+            });
         } catch (error) {
             console.error('Error fetching data:', error);
             setSelectedCompound(null);
@@ -18,11 +22,17 @@ function Dashboard() {
     }
 
     return (
-        <>
-            <ScatterPlot onClick={handlePointClick}/>
-            <CompoundDetails compoundData={selectedCompound} />
-        </>
-    )
+        <div className="dashboard-container">
+            <div className="scatter-plot-container">
+                <div className="control-panel">
+                    <ScatterPlot onClick={handlePointClick} />
+                </div>
+            </div>
+            <div className="details-panel">
+                <CompoundDetails compoundData={selectedCompound} />
+            </div>
+        </div>
+    );
 }
 
 export default Dashboard
