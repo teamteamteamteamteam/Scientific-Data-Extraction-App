@@ -25,6 +25,8 @@
   overflow-y: auto;
   font-size: 14px;
   line-height: 1.6;
+  overflow: hidden;
+  word-wrap: break-word;
 }
 
 .details-panel h3 {
