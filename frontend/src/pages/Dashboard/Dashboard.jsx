@@ -6,7 +6,7 @@ import './Dashboard.css';
 function Dashboard() {
     const [selectedCompound, setSelectedCompound] = useState(null);
 
-    const handlePointClick = async ({name, concentration}) => {
+    const handlePointClick = async ({ name, concentration }) => {
         const apiURL = `http://127.0.0.1:8000/compound/details/${name}/${concentration}`
         try {
             const response = await fetch(apiURL);
@@ -14,6 +14,7 @@ function Dashboard() {
             setSelectedCompound({
                 ...result[0],
                 name: name,
+                concentration: concentration
             });
         } catch (error) {
             console.error('Error fetching data:', error);
