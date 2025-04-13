@@ -93,7 +93,7 @@ class CalculateVectors:
             "FileName_Tubulin": df["FileName_Tubulin"].tolist(),
             "FileName_Actin": df["FileName_Actin"].tolist(),
         }
-
+        
         return file_names
     
     def convert_vectors_to_2D(self):

@@ -80,3 +80,35 @@ class DatabaseInterface(ABC):
     @abstractmethod
     def insert_into_color_table_by_moa(self, moa, concentration, r, g, b):
         pass # pragma: no cover
+
+    @abstractmethod
+    def fetch_photos_by_compound_id(self, id):
+        pass # pragma: no cover
+
+    @abstractmethod
+    def create_table_tiff_images(self):
+        pass # pragma: no cover
+
+    @abstractmethod
+    def insert_into_table_tiff_images(self, compound_id, dapi_blob, tubulin_blob, actin_blob):
+        pass # pragma: no cover
+
+    @abstractmethod
+    def fetch_all_images_path(self):
+        pass # pragma: no cover
+
+    @abstractmethod
+    def fetch_dapi_image(self, compound_id):
+        pass # pragma: no cover
+
+    @abstractmethod
+    def fetch_actin_image(self, compound_id):
+        pass # pragma: no cover
+
+    @abstractmethod
+    def fetch_tubulin_image(self, compound_id):
+        pass # pragma: no cover
+
+    @abstractmethod
+    def fetch_all_tiff_images(self):
+        pass # pragma: no cover
