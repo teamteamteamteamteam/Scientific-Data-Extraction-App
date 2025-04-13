@@ -1,8 +1,10 @@
 from fastapi import APIRouter
 from .Repository import Repository
+from .Service import Service
 
 router = APIRouter()
 repository = Repository()
+service = Service()
 
 @router.get("/compounds")
 async def get_compounds():
@@ -19,3 +21,7 @@ async def get_compounds():
 @router.get("/compound/details/{compound_name}/{compound_concentration}")
 async def get_compounds(compound_name: str, compound_concentration: float):
     return repository.get_compound_details(compound_name, compound_concentration)
+
+@router.get("/compound/distances/{compound_name}/{compound_concentration}")
+async def get_distances_to_compound(compound_name: str, compound_concentration: float):
+    return service.get_distances_to_compound(compound_name, compound_concentration)
