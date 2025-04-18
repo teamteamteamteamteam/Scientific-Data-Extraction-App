@@ -47,6 +47,7 @@ def get_image_as_png(image_type: str, compound_id: int):
     png_io.seek(0)
 
     return StreamingResponse(png_io, media_type="image/png")
+
 @router.get("/compound/distances/{compound_name}/{compound_concentration}")
 async def get_distances_to_compound(compound_name: str, compound_concentration: float):
     return service.get_distances_to_compound(compound_name, compound_concentration)

@@ -55,23 +55,22 @@ class Repository:
         result = ()
         match image_type:
             case "dapi": 
-                result = self.database.fetch_dapi_image(compound_id, image_type)
+                result = self.database.fetch_dapi_image(compound_id)
             case "actin":
-                result = self.database.fetch_actin_image(compound_id, image_type)
+                result = self.database.fetch_actin_image(compound_id)
             case "tubulin":
-                result = self.database.fetch_tubulin_image(compound_id, image_type)
+                result = self.database.fetch_tubulin_image(compound_id)
             case _:
                 return None
         
         if result and isinstance(result, tuple) and len(result) > 0:
             return result[0]
         return None
+    
     def get_compound_coordinates(self, compound_name, compound_concentration):
         results = self.database.fetch_compound_coordinate(compound_name, compound_concentration)
         return {
             "coord_x": results[0], 
             "coord_y": results[1], 
             }
-        
-        
-
+    

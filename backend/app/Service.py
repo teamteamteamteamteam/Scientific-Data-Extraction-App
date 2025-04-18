@@ -21,12 +21,10 @@ class Service:
             distance = math.sqrt((c_x - x)**2 + (c_y - y)**2)
 
             result.append({
-                "name": compound["compound_name"], 
-                "concentration": compound["compound_concentration"], 
+                "name": compound["name"], 
+                "concentration": compound["concentration"], 
                 "distance" : distance
             })
 
         return result
-
-            
     

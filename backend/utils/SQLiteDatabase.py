@@ -254,6 +254,7 @@ class SQLiteDatabase(DatabaseInterface):
                             SELECT compound_id, folder_path, dapi_path, tubulin_path, actin_path 
                             FROM Images
                             """)
+        return self.cursor.fetchall()
         
     def fetch_dapi_image(self, compound_id):
         self.cursor.execute("""
