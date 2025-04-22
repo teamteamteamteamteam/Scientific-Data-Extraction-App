@@ -5,3 +5,4 @@ __pycache__/
 
 #database fildes
 *.db
+backend/database/database.db
