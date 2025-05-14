@@ -285,3 +285,11 @@ class SQLiteDatabase(DatabaseInterface):
                             FROM Tiff_images
                             """)
         return self.cursor.fetchall()
+    
+    def fetch_compound_coordinate(self, compound_name, compound_concentration):
+        self.cursor.execute("""
+                            SELECT c.coord_x, c.coord_y
+                            FROM Compounds c
+                            WHERE c.compound_name = ? AND c.compound_concentration = ?
+                            """, (compound_name, compound_concentration))
+        return self.cursor.fetchone()

@@ -112,4 +112,8 @@ class DatabaseInterface(ABC):
     @abstractmethod
     def fetch_all_tiff_images(self):
         pass # pragma: no cover
+
+    @abstractmethod
+    def fetch_compound_coordinate(self, compound_name, compound_concentration):
+        pass # pragma: no cover
     
