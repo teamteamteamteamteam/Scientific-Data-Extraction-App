@@ -19,7 +19,7 @@ class SQLiteDatabase(DatabaseInterface):
         # Establishes a connection to the database if none exists
         if self.conn is None:
             try:
-                self.conn = sqlite3.connect(self.db_path)
+                self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
                 self.cursor = self.conn.cursor()
                 SQLiteDatabase._connection_count += 1
             except sqlite3.Error as e:
@@ -110,6 +110,20 @@ class SQLiteDatabase(DatabaseInterface):
         except sqlite3.Error as e:
             print(f"Error creating Color_by_moa table: {e}")
 
+    def create_table_tiff_images(self):
+        try:
+            self.cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Tiff_images (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    compound_id INTEGER,
+                    dapi_blob BLOB,
+                    tubulin_blob BLOB, 
+                    actin_blob BLOB
+                )
+            ''')
+        except sqlite3.Error as e:
+            print(f"Error creating tiff_images: {e}")
+
     # Table insert methods
     def insert_into_table_compounds(self, compound_name, compound_concentration, smiles, is_active):
         self.cursor.execute('''
@@ -122,6 +136,12 @@ class SQLiteDatabase(DatabaseInterface):
                         INSERT INTO Images (compound_id, folder_path, dapi_path, tubulin_path, actin_path)
                         VALUES (?, ?, ?, ?, ?)
                     ''', (compound_id, folder_path, dapi, actin, tubulin))
+        
+    def insert_into_table_tiff_images(self, compound_id, dapi_blob, tubulin_blob, actin_blob):
+        self.cursor.execute('''
+                        INSERT INTO Tiff_images (compound_id, dapi_blob, tubulin_blob, actin_blob)
+                        VALUES (?, ?, ?, ?)
+                    ''', (compound_id, dapi_blob, tubulin_blob, actin_blob))
         
     def insert_into_color_by_concentration(self, r, g, b):
         self.cursor.execute('''
@@ -220,12 +240,48 @@ class SQLiteDatabase(DatabaseInterface):
                             WHERE c.compound_name = ? AND c.compound_concentration = ?
                             """, (compound_name, compound_concentration))
         return self.cursor.fetchone()
-    
 
-    def fetch_compound_coordinate(self, compound_name, compound_concentration):
+    def fetch_photos_by_compound_id(self, id):
         self.cursor.execute("""
-                            SELECT c.coord_x, c.coord_y
-                            FROM Compounds c
-                            WHERE c.compound_name = ? AND c.compound_concentration = ?
-                            """, (compound_name, compound_concentration))
+                            SELECT i.folder_path, i.dapi_path, i.tubulin_path, i.action_path
+                            FROM Images i
+                            WHERE i.compound_id = ? 
+                            """, (id,))
+        return self.cursor.fetchall()
+    
+    def fetch_all_images_path(self):
+        self.cursor.execute("""
+                            SELECT compound_id, folder_path, dapi_path, tubulin_path, actin_path 
+                            FROM Images
+                            """)
+        
+    def fetch_dapi_image(self, compound_id):
+        self.cursor.execute("""
+                            SELECT dapi_blob
+                            FROM Tiff_images
+                            WHERE compound_id = ?
+                            """, (compound_id,))
         return self.cursor.fetchone()
+    
+    def fetch_actin_image(self, compound_id):
+        self.cursor.execute("""
+                            SELECT actin_blob
+                            FROM Tiff_images
+                            WHERE compound_id = ?
+                            """, (compound_id,))
+        return self.cursor.fetchone()
+    
+    def fetch_tubulin_image(self, compound_id):
+        self.cursor.execute("""
+                            SELECT tubulin_blob
+                            FROM Tiff_images
+                            WHERE compound_id = ?
+                            """, (compound_id,))
+        return self.cursor.fetchone()
+    
+    def fetch_all_tiff_images(self):
+        self.cursor.execute("""
+                            SELECT id, compound_id, length(dapi_blob), length(tubulin_blob), length(actin_blob)
+                            FROM Tiff_images
+                            """)
+        return self.cursor.fetchall()
