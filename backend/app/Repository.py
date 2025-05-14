@@ -50,3 +50,13 @@ class Repository:
             "moa_concentration": results[2]
             }
         ]
+    
+    def get_compound_coordinates(self, compound_name, compound_concentration):
+        results = self.database.fetch_compound_coordinate(compound_name, compound_concentration)
+        return {
+            "coord_x": results[0], 
+            "coord_y": results[1], 
+            }
+        
+        
+
