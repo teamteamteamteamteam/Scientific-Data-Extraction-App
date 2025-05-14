@@ -62,11 +62,11 @@ class Repository:
         result = ()
         match image_type:
             case "dapi": 
-                result = self.database.fetch_dapi_image(compound_id, image_type)
+                result = self.database.fetch_dapi_image(compound_id)
             case "actin":
-                result = self.database.fetch_actin_image(compound_id, image_type)
+                result = self.database.fetch_actin_image(compound_id)
             case "tubulin":
-                result = self.database.fetch_tubulin_image(compound_id, image_type)
+                result = self.database.fetch_tubulin_image(compound_id)
             case _:
                 return None
         
