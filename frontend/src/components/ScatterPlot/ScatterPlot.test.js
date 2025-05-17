@@ -2,6 +2,12 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import ScatterPlot from "./ScatterPlot";
 
+const defaultProps = {
+  onClick: jest.fn(),
+  selectedCompound: { name: "Compound1", concentration: 10 },
+  closestCompounds: [],
+};
+
 jest.mock("../ColorBySelect/ColorBySelect", () => {
     const COLOR_BY_CRITERIUM = {
       CONCENTRATION: "concentration",
@@ -51,7 +57,7 @@ describe("ScatterPlot Component", () => {
   });
 
   test("renders ColorBySelect and Plotly components", () => {
-    render(<ScatterPlot onClick={jest.fn()} />);
+    render(<ScatterPlot {...defaultProps} />);
 
     expect(screen.getByTestId("color-by-select")).toBeInTheDocument();
     expect(screen.getByTestId("plotly-mock")).toBeInTheDocument();
@@ -72,7 +78,7 @@ describe("ScatterPlot Component", () => {
       json: async () => mockData,
     });
 
-    render(<ScatterPlot onClick={jest.fn()} />);
+    render(<ScatterPlot {...defaultProps} />);
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith("http://127.0.0.1:8000/compounds/colored_by_concentration");
@@ -94,7 +100,7 @@ describe("ScatterPlot Component", () => {
       json: async () => mockData,
     });
 
-    render(<ScatterPlot onClick={jest.fn()} />);
+    render(<ScatterPlot {...defaultProps} />);
 
     fireEvent.change(screen.getByTestId("color-by-select"), {
       target: { value: "moa" },
@@ -107,10 +113,14 @@ describe("ScatterPlot Component", () => {
 
   test("calls onClick with correct data when Plotly is clicked", () => {
     const handleClick = jest.fn();
-    render(<ScatterPlot onClick={handleClick} />);
+    render(<ScatterPlot {...defaultProps} onClick={handleClick}/>);
 
     fireEvent.click(screen.getByTestId("plotly-mock"));
 
-    expect(handleClick).toHaveBeenCalledWith({ name: "Compound1", concentration: 10 });
+    expect(handleClick).toHaveBeenCalledWith(
+      expect.objectContaining({
+        customdata: { name: "Compound1", concentration: 10 },
+      })
+    );
   });
 });
