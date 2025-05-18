@@ -98,15 +98,15 @@ class DatabaseInterface(ABC):
         pass # pragma: no cover
 
     @abstractmethod
-    def fetch_dapi_image(self, compound_id):
+    def fetch_dapi_image(self, compound_name, compound_concentration):
         pass # pragma: no cover
 
     @abstractmethod
-    def fetch_actin_image(self, compound_id):
+    def fetch_actin_image(self, compound_name, compound_concentration):
         pass # pragma: no cover
 
     @abstractmethod
-    def fetch_tubulin_image(self, compound_id):
+    def fetch_tubulin_image(self, compound_name, compound_concentration):
         pass # pragma: no cover
 
     @abstractmethod

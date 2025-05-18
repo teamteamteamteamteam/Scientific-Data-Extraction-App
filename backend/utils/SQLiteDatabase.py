@@ -256,28 +256,31 @@ class SQLiteDatabase(DatabaseInterface):
                             """)
         return self.cursor.fetchall()
         
-    def fetch_dapi_image(self, compound_id):
+    def fetch_dapi_image(self, compound_name, compound_concentration):
         self.cursor.execute("""
                             SELECT dapi_blob
-                            FROM Tiff_images
-                            WHERE compound_id = ?
-                            """, (compound_id,))
+                            FROM Tiff_images ti
+                            INNER JOIN Compounds c ON c.compound_id = ti.compound_id
+                            WHERE c.compound_name = ? AND c.compound_concentration = ?
+                            """, (compound_name, compound_concentration,))
         return self.cursor.fetchone()
     
-    def fetch_actin_image(self, compound_id):
+    def fetch_actin_image(self, compound_name, compound_concentration):
         self.cursor.execute("""
                             SELECT actin_blob
-                            FROM Tiff_images
-                            WHERE compound_id = ?
-                            """, (compound_id,))
+                            FROM Tiff_images ti
+                            INNER JOIN Compounds c ON c.compound_id = ti.compound_id
+                            WHERE c.compound_name = ? AND c.compound_concentration = ?
+                            """, (compound_name, compound_concentration,))
         return self.cursor.fetchone()
     
-    def fetch_tubulin_image(self, compound_id):
+    def fetch_tubulin_image(self, compound_name, compound_concentration):
         self.cursor.execute("""
                             SELECT tubulin_blob
-                            FROM Tiff_images
-                            WHERE compound_id = ?
-                            """, (compound_id,))
+                            FROM Tiff_images ti
+                            INNER JOIN Compounds c ON c.compound_id = ti.compound_id
+                            WHERE c.compound_name = ? AND c.compound_concentration = ?
+                            """, (compound_name, compound_concentration,))
         return self.cursor.fetchone()
     
     def fetch_all_tiff_images(self):
