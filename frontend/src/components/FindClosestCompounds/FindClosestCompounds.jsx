@@ -1,7 +1,7 @@
 import './FindClosestCompounds.css';
 import React, { useState } from 'react';
 const FindClosestCompounds = ({ onClick }) => {
-    const [inputValue, setInputValue] = useState(null);
+    const [inputValue, setInputValue] = useState("");
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
