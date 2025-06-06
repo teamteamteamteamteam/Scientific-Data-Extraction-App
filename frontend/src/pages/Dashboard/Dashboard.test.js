@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Dashboard from "./Dashboard";
 
 jest.mock("../../components/ScatterPlot/ScatterPlot", () => (props) => (
-  <div data-testid="scatter-plot" onClick={() => props.onClick({ name: "Compound1", concentration: 10 })}>
+  <div data-testid="scatter-plot" onClick={() => props.onClick({ customdata: { name: "Compound1", concentration: 10 } })}>
     ScatterPlot Component
   </div>
 ));
@@ -16,6 +16,12 @@ jest.mock("../../components/CompoundDetails/CompoundDetails", () => (props) => (
         "No Data"
     }
   </div>
+));
+
+jest.mock("../../components/FindClosestCompounds/FindClosestCompounds", () => (props) => (
+  <button data-testid="find-button" onClick={() => props.onClick(5)}>
+    Find Closest
+  </button>
 ));
 
 describe("Dashboard Component", () => {
@@ -64,5 +70,35 @@ describe("Dashboard Component", () => {
 
     const noData = await screen.findByText("No Data");
     expect(noData).toBeInTheDocument();
+  });
+
+  test("handleFindClosestClick does nothing if number <= 0", async () => {
+    render(<Dashboard />);
+    const findBtn = screen.getByTestId('find-button');
+    fireEvent.click(findBtn);
+
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test("handleFindClosestClick fetches closest compounds if compound selected", async () => {
+    const mockDetails = [{ smiles: "X", moa: "Y", moa_concentration: "Z" }];
+    const mockDistances = [
+      { name: "Compound2", concentration: 5 },
+      { name: "Compound3", concentration: 7 },
+    ];
+
+    fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => mockDetails })
+      .mockResolvedValueOnce({ ok: true, json: async () => mockDistances });
+
+    render(<Dashboard />);
+    fireEvent.click(screen.getByTestId("scatter-plot"));
+    await screen.findByText(/Details: Compound1/);
+
+    fireEvent.click(screen.getByTestId("find-button"));
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      "http://127.0.0.1:8000/compound/distances/Compound1/10"
+    );
   });
 });
