@@ -1,5 +1,6 @@
 import { SmilesSvgRenderer } from 'react-ocl';
 import "./CompoundDetails.css";
+import CompoundImagesSection from '../CompoundImagesSection/CompoundImagesSection';
 
 function CompoundDetails({ compoundData }) {
     return compoundData ? (
@@ -14,6 +15,7 @@ function CompoundDetails({ compoundData }) {
                     <SmilesSvgRenderer smiles={compoundData.smiles} />
                 </div>
             }
+            <CompoundImagesSection compoundData={compoundData} />
         </div>
     )
         : (
