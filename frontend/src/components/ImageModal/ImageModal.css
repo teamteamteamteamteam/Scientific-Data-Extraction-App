@@ -1,0 +1,51 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+}
+
+.full-image {
+    max-width: 100%;
+    max-height: 400px;
+    margin-bottom: 20px;
+}
+
+.rgb-controls input {
+    width: 100%;
+}
+
+.close-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.close-button:hover {
+    background-color: #a71d2a;
+}
+

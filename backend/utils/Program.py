@@ -3,6 +3,7 @@ from .DatabaseFiller import *
 from .UsablePaths import Paths
 from .SQLiteDatabase import SQLiteDatabase
 from .formatter_csv.CalculateVectors import CalculateVectors
+from .formatter_csv.formatt_csv_files import CsvFormatter
 from pathlib import Path
 
 database = SQLiteDatabase(Paths.DATABASE_PATH)
@@ -20,6 +21,10 @@ db_filler_compounds.fill_initial_data()
 
 formatted_folder_path = Path(__file__).parent / "formatter_csv" / "formatted"
 original_folder_path = Path(__file__).parent / "formatter_csv" / "original"
+
+formatter = CsvFormatter(str(original_folder_path), str(formatted_folder_path))
+formatter.run_formatter()
+
 calculateVectors = CalculateVectors(str(formatted_folder_path), str(original_folder_path), database)
 calculateVectors.iterate_formatted_folder()
 calculateVectors.convert_vectors_to_2D()

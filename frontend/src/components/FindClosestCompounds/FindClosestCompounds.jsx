@@ -1,16 +1,23 @@
 import './FindClosestCompounds.css';
 import React, { useState } from 'react';
 const FindClosestCompounds = ({ onClick }) => {
-    const [inputValue, setInputValue] = useState(null);
+    const [inputValue, setInputValue] = useState("");
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (inputValue !== '') {
+            onClick(Number(inputValue));
+        }
+    };
+
     return (
         <div className="find-closest-compounds">
             <h1 className="title">Find Closest Compounds</h1>
-            <div className="input-container">
+            <form className="input-container" onSubmit={handleSubmit}>
                 <input
                     className="input-field"
                     type="number"
@@ -21,11 +28,11 @@ const FindClosestCompounds = ({ onClick }) => {
                 />
                 <button
                     className="find-button"
-                    onClick={() => onClick(Number(inputValue))}
+                    type="submit"
                 >
                     FIND
                 </button>
-            </div>
+            </form>
         </div>
     );
 };

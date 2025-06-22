@@ -28,6 +28,3 @@ class Service:
 
         result.sort(key=lambda comp: comp["distance"])
         return result
-
-            
-    
