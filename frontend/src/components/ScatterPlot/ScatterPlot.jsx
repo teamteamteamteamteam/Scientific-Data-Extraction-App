@@ -18,7 +18,7 @@ const ScatterPlot = memo(function ScatterPlot({ onClick, selectedCompound, close
     const plotRef = useRef(null);
 
     const fetchData = async (colorBy) => {
-        const apiURL = `http://127.0.0.1:8000/compounds/colored_by_${colorBy}`;
+    const apiURL = `http://127.0.0.1:8888/compounds/colored_by_${colorBy}`;
         try {
             const response = await fetch(apiURL);
             const result = await response.json();

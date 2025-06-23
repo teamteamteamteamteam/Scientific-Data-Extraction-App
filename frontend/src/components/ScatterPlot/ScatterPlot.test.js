@@ -81,7 +81,9 @@ describe("ScatterPlot Component", () => {
     render(<ScatterPlot {...defaultProps} />);
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith("http://127.0.0.1:8000/compounds/colored_by_concentration");
+      expect(fetch).toHaveBeenCalledWith(
+        "http://127.0.0.1:8888/compounds/colored_by_concentration"
+      );
     });
   });
 
@@ -107,7 +109,9 @@ describe("ScatterPlot Component", () => {
     });
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith("http://127.0.0.1:8000/compounds/colored_by_moa");
+      expect(fetch).toHaveBeenCalledWith(
+        "http://127.0.0.1:8888/compounds/colored_by_moa"
+      );
     });
   });
 
