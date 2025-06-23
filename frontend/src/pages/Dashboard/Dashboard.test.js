@@ -54,7 +54,7 @@ describe("Dashboard Component", () => {
     fireEvent.click(screen.getByTestId("scatter-plot"));
 
     expect(global.fetch).toHaveBeenCalledWith(
-      "http://127.0.0.1:8000/compound/details/Compound1/10"
+      "http://127.0.0.1:8888/compound/details/Compound1/10"
     );
 
     const details = await screen.findByText("Details: Compound1, test moa, test smiles, test concentration");

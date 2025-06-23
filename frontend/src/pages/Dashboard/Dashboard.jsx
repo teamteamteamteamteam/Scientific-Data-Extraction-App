@@ -15,10 +15,12 @@ function Dashboard() {
         }
 
         setNumberOfClosestCompounds(numberOfCompounds);
-        if (selectedCompound && (!compoundsSortedByDistance.length ||
-                !isSameCompound(selectedCompound, compoundsSortedByDistance[0]))) {
-
-            const apiURL = `http://127.0.0.1:8000/compound/distances/${selectedCompound.name}/${selectedCompound.concentration}`
+    if (
+      selectedCompound &&
+      (!compoundsSortedByDistance.length ||
+        !isSameCompound(selectedCompound, compoundsSortedByDistance[0]))
+    ) {
+      const apiURL = `http://127.0.0.1:8888/compound/distances/${selectedCompound.name}/${selectedCompound.concentration}`;
             try {
                 const response = await fetch(apiURL);
                 const result = await response.json();

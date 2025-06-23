@@ -23,7 +23,7 @@ function CompoundImagesSection({ compoundData }) {
             <h3>Images</h3>
             <div className="image-thumbnails">
                 {imageTypes.map((type) => {
-                    const imageUrl = `http://127.0.0.1:8000/images/png/${type}/${compoundData.name}/${compoundData.concentration}`;
+          const imageUrl = `http://127.0.0.1:8888/images/png/${type}/${compoundData.name}/${compoundData.concentration}`;
                     return (
                         <div className="image-wrapper" key={type}>
                             {!loadedImages[type] && <div className="loader">Loading...</div>}

@@ -12,7 +12,7 @@ function ImageModal({ imageType, compoundData, onClose }) {
     const imageRef = useRef(null);
     const [loading, setLoading] = useState(true);
 
-    const imageURL = `http://127.0.0.1:8000/images/png/${imageType}/${compoundData.name}/${compoundData.concentration}`;
+  const imageURL = `http://127.0.0.1:8888/images/png/${imageType}/${compoundData.name}/${compoundData.concentration}`;
 
     const updateRange = (channel, newRange) => {
         setRanges(prev => ({ ...prev, [channel]: newRange }));
